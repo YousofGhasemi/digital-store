@@ -12,8 +12,8 @@ class User:
 
 
 class Admin(User):
-    def __init__(self, username):
-        super().__init__(username)
+    def __init__(self, username, password, email):
+        super().__init__(username, password, email)
 
     def add_product(self, store, product):
         if isinstance(store, Store) and isinstance(product, Product):
@@ -29,7 +29,7 @@ class Admin(User):
 
 
 class Customer(User):
-    def __init__(self, username, password, email, cart):
+    def __init__(self, username, password, email):
         super().__init__(username, password, email)
         self.cart = []
 
@@ -62,12 +62,19 @@ class Customer(User):
                 for i, item in enumerate(self.cart):
                     p, c = item
                     if p == product:
-                        self.cart[i] = (p, c - count)
-                        repeted = True
+                        new_count = c - count
+                        if new_count <= 0:
+                            self.cart.pop(i)
+                            print(f"{product.name} removed from cart.")
+                        else:
+                            self.cart[i] = (p, new_count)
+                            print(
+                                f"{count} of {product.name} removed. Remaining: {new_count}"
+                            )
                         break
 
     def show_cart(self):
-        for i, item in self.cart:
+        for i, item in enumerate(self.cart):
             product, count = self.cart[i]
             print(f"{i+1}- {product} : {count}")
 
