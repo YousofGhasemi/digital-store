@@ -2,12 +2,13 @@ from store import Store, Product
 
 
 class User:
-
-    def __init__(self, username):
+    def __init__(self, username, password, email):
         self.username = username
+        self.password = password
+        self.email = email
 
     def __str__(self):
-        return f"User with ({self.username}) username"
+        return f"User: {self.username} ({self.email})"
 
 
 class Admin(User):
@@ -28,8 +29,8 @@ class Admin(User):
 
 
 class Customer(User):
-    def __init__(self, username):
-        super().__init__(username)
+    def __init__(self, username, password, email, cart):
+        super().__init__(username, password, email)
         self.cart = []
 
     def add_to_cart(self, product, count):
@@ -51,6 +52,25 @@ class Customer(User):
 
                 print(f"{count} of {product} is added to cart!")
 
+    def remove_from_cart(self, product, count):
+        if not isinstance(product, Product):
+            print("Invalid product!")
+        else:
+            if count <= 0:
+                print("Count must be positive!")
+            else:
+                for i, item in enumerate(self.cart):
+                    p, c = item
+                    if p == product:
+                        self.cart[i] = (p, c - count)
+                        repeted = True
+                        break
+
+    def show_cart(self):
+        for i, item in self.cart:
+            product, count = self.cart[i]
+            print(f"{i+1}- {product} : {count}")
+
     def total_cart(self):
         total = 0
         for product, quantity in self.cart:
@@ -66,7 +86,7 @@ class Customer(User):
         total = self.total_cart()
         print(f"Total: {total} {Product.currency}")
         print(f"Payment method: {payment_method}")
-
+        # payment method is in process!
         print("Checkout successful!")
         self.cart.clear()
         return True
