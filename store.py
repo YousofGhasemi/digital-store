@@ -3,6 +3,7 @@ class Store:
     def __init__(self, name):
         self.name = name
         self.products = []
+        self.orders = []
 
     def __str__(self):
         return f"{self.name} Store"
@@ -20,6 +21,13 @@ class Store:
             print(f"the {product.name} has been removed from {self.name}")
         else:
             print(f"the {product.name} is not in {self.name}")
+
+    def show_orders(self):
+        if not self.orders:
+            print(f"No orders in {self.name}")
+        else:
+            for i, order in enumerate(self.orders, start=1):
+                print(f"{i}. {order}")
 
     def list_products(self):
         if self.products:
@@ -59,9 +67,9 @@ class Product:
     def reduce_stock(self, Amount):
         Amount = int(Amount)
         if Amount <= self.stock:
-            self.stock += Amount
+            self.stock -= Amount
             print(
-                f"The quantity of {Amount} units is deducted from the inventory of {self.name} products and the new inventory is equal to {new_stock} units."
+                f"The quantity of {Amount} units is deducted from the inventory of {self.name} products and the new inventory is equal to {self.stock} units."
             )
             return self.stock
         else:
