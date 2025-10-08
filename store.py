@@ -29,10 +29,6 @@ class Store:
             print(f"there is no product in {self.name}")
 
 
-class Order:
-    pass
-
-
 class Product:
     currency = "IRR"
 
