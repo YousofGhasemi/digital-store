@@ -21,7 +21,7 @@ class Store:
         else:
             print(f"the {product.name} is not in {self.name}")
 
-    def list_product(self):
+    def list_products(self):
         if self.products:
             for prod in self.products:
                 print(prod)
@@ -38,7 +38,10 @@ class Product:
         self.stock = stock
 
     def __str__(self):
-        return f"A {self.name} Product priced at {self.price} {self.currency} and with a stock of {self.stock}"
+        return f"{self.name} - {self.price} {self.currency} (Stock: {self.stock})"
+
+    def __repr__(self):
+        return f"Product(name='{self.name}', price={self.price}, stock={self.stock})"
 
     def add_stock(self, Amount):
         Amount = int(Amount)
@@ -56,12 +59,11 @@ class Product:
     def reduce_stock(self, Amount):
         Amount = int(Amount)
         if Amount <= self.stock:
-            new_stock = self.stock - Amount
-            self.stock = new_stock
+            self.stock += Amount
             print(
                 f"The quantity of {Amount} units is deducted from the inventory of {self.name} products and the new inventory is equal to {new_stock} units."
             )
-            return new_stock
+            return self.stock
         else:
             print("Not enough inventory!!!")
             return False
