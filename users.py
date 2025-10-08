@@ -1,4 +1,5 @@
 from store import Store, Product
+from order import Order
 
 
 class User:
@@ -74,26 +75,42 @@ class Customer(User):
                         break
 
     def show_cart(self):
-        for i, item in enumerate(self.cart):
-            product, count = self.cart[i]
-            print(f"{i+1}- {product} : {count}")
+        i = 0
+        for product, count in self.cart:
+            i += 1
+            print(f"{i}- {product} : {count}")
 
     def total_cart(self):
         total = 0
-        for product, quantity in self.cart:
+        for product, count in self.cart:
             if hasattr(product, "price"):
-                total += product.price * quantity
+                total += product.price * count
         return total
 
-    def checkout(self, payment_method):
+    def checkout(self, store, payment_method="Credit Card"):
         if not self.cart:
             print("Cart is empty!")
             return False
 
+        for product, count in self.cart:
+            if count > product.stock:
+                print(
+                    f"Not enough stock for {product.name}! (available: {product.stock})"
+                )
+                return False
+
+        for product, count in self.cart:
+            product.reduce_stock(count)
+
         total = self.total_cart()
-        print(f"Total: {total} {Product.currency}")
-        print(f"Payment method: {payment_method}")
-        # payment method is in process!
-        print("Checkout successful!")
+
+        order = Order(self, self.cart.copy(), total)
+        order.mark_as_paid()
+        store.orders.append(order)
+
         self.cart.clear()
+
+        print(f"✅ Checkout successful! Order ID: {order.order_id}")
+        print(f"Total paid: {total} {Product.currency}")
+        print(f"Payment method: {payment_method}")
         return True
